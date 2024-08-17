@@ -10,5 +10,13 @@ export default class Brush {
         const y: number = clamp(Math.floor(normalizedMousePosition.y / pixelSize), 0, mazeSize - 1);
         matrix.set(x, y, 1);
         matrix.dump();
+
+        // const ctx = canvas.getContext('2d')!;
+        // ctx.beginPath();
+        // ctx.rect(x*pixelSize, y*pixelSize, pixelSize, pixelSize);
+        // ctx.fillStyle = "black";
+        // // this.ctx.fillText(`Coordinate: ${x}, ${y}`, this.canvas.width / 8, this.canvas.height / 9);
+        // // this.ctx.fillText(`Mouse Coordinate: ${normalizedMousePosition.x}, ${normalizedMousePosition.y}`, this.canvas.width / 8, this.canvas.height / 3.5);
+        // ctx.fill()
     }
 }
