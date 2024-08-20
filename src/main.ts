@@ -8,7 +8,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <h2>
     Maze Solver
   </h2>
-  <span>Draw your own maze and the magic algorithm will try and solve it.</span>
+  <span>Draw your own maze and the magic algorithm will try and solve it. (<a href="https://github.com/Lunarisnia/maze-drawer">Source Code</a>)</span>
   <div>
     <canvas id="myCanvas" width="24" height="24" style="border:1px solid #000000;">
     </canvas>
