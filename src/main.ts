@@ -17,6 +17,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   ${BrushButton("RedBrush", "🟥 Maze Starting Point")}
   ${BrushButton("GreenBrush", "🟩 Maze Ending Point")}
   ${BrushButton("WhiteBrush", "⬜ Maze Path")}
+  ${BrushButton("BlackBrush", "Black Wall")}
   <div>
     <br>
     <br>
@@ -39,12 +40,21 @@ async function main() {
     document.getElementById('GreenBrush')!.addEventListener('click', () => {
         pixelCanvas.changeBrushColor("green")
     })
+    document.getElementById('BlackBrush')!.addEventListener('click', () => {
+        pixelCanvas.changeBrushColor("black")
+    })
     document.getElementById('resetButton')!.addEventListener('click', () => {
         pixelCanvas.reset()
     })
     document.getElementById('solveButton')!.addEventListener('click', () => {
+        // console.log(pixelCanvas.matrix.matrix)
         const solver: Solver = new AStar(pixelCanvas.matrix.matrix, pixelCanvas.matrix.start, pixelCanvas.matrix.end)
-        pixelCanvas.matrix.matrix = solver.solve()
+        pixelCanvas.matrix.reset()
+        const [solution, unsolvable] = solver.solve()
+        pixelCanvas.matrix.matrix = solution
+        if (unsolvable) {
+            console.log("unsolveable")
+        }
         pixelCanvas.matrix.dump()
     })
     while (true) {

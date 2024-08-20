@@ -1,67 +1,98 @@
-export class MinimumHeap {
-    public heap: Array<number> = new Array<number>();
-    constructor() { }
+import Vector2 from "./vector2.ts";
 
+export class Weight {
+    finalCost: number
+    startCost: number
+    endCost: number
+    passable: boolean
+    position: Vector2
+    parent: Weight | null
+    constructor(parent: Weight | null, finalCost: number, startCost: number, endCost: number, passable: boolean, position: Vector2) {
+        this.finalCost = finalCost;
+        this.startCost = startCost;
+        this.endCost = endCost;
+        this.passable = passable;
+        this.position = position
+        this.parent = parent
+    }
+}
+export class MinHeap {
+    private heap: Weight[] = [];
 
-    public getMin = () => {
-        return this.heap[0]
+    private getParentIndex(index: number): number {
+        return Math.floor((index - 1) / 2);
     }
 
-    public insert = (x: number) => {
-        this.heap.push(x);
-        if (this.heap.length > 1) {
-            let currentIndex = this.heap.length - 1;
+    private getLeftChildIndex(index: number): number {
+        return 2 * index + 1;
+    }
 
-            while (currentIndex > 1 && this.heap[Math.floor(currentIndex / 2)] > this.heap[currentIndex]) {
-                this.swapIndex(Math.floor(currentIndex / 2), currentIndex)
-                currentIndex = Math.floor(currentIndex / 2)
-            }
+    private getRightChildIndex(index: number): number {
+        return 2 * index + 2;
+    }
+
+    private swap(index1: number, index2: number): void {
+        const temp = this.heap[index1];
+        this.heap[index1] = this.heap[index2];
+        this.heap[index2] = temp;
+    }
+
+    private heapifyUp(): void {
+        let index = this.heap.length - 1;
+        while (this.getParentIndex(index) >= 0 && this.heap[this.getParentIndex(index)].finalCost > this.heap[index].finalCost) {
+            this.swap(index, this.getParentIndex(index));
+            index = this.getParentIndex(index);
         }
     }
 
-    public remove = () => {
-        this.heap[0] = this.heap[this.heap.length - 1]
-        this.heap.splice(this.heap.length - 1, 1);
-
-
-        let parent = 0;
-        let leftChildIndex = 2 * parent + 1;
-        let rightChildIndex = 2 * parent + 2;
-        let left = leftChildIndex > this.heap.length ? null : this.heap[leftChildIndex];
-        let right = rightChildIndex > this.heap.length ? null : this.heap[rightChildIndex];
-        do {
-            // no children
-            if (!left && !right) {
-                return;
+    private heapifyDown(): void {
+        let index = 0;
+        while (this.getLeftChildIndex(index) < this.heap.length) {
+            let smallerChildIndex = this.getLeftChildIndex(index);
+            if (this.getRightChildIndex(index) < this.heap.length && this.heap[this.getRightChildIndex(index)].finalCost < this.heap[smallerChildIndex].finalCost) {
+                smallerChildIndex = this.getRightChildIndex(index);
             }
 
-            // 1 child
-            else if (!right && left && this.heap[parent] > left) {
-                this.swapIndex(parent, leftChildIndex)
-                parent = leftChildIndex;
+            if (this.heap[index].finalCost <= this.heap[smallerChildIndex].finalCost) {
+                break;
             }
 
-            // 2 children
-            else if (left && right) {
-                if (left < right && this.heap[parent] > left) {
-                    this.swapIndex(parent, leftChildIndex)
-                    parent = leftChildIndex;
-                }
-                else if (left > right && this.heap[parent] > right) {
-                    this.swapIndex(parent, rightChildIndex)
-                    parent = rightChildIndex;
-                }
-            }
-
-            leftChildIndex = 2 * parent + 1;
-            rightChildIndex = 2 * parent + 2;
-            left = leftChildIndex > this.heap.length ? null : this.heap[leftChildIndex];
-            right = rightChildIndex > this.heap.length ? null : this.heap[rightChildIndex];
-
-        } while (left && right && (this.heap[parent] > left || this.heap[parent] > right))
+            this.swap(index, smallerChildIndex);
+            index = smallerChildIndex;
+        }
     }
 
-    private swapIndex = (a: any, b: any) => {
-        [this.heap[a], this.heap[b]] = [this.heap[b], this.heap[a]]
+    insert(weight: Weight): void {
+        for (const w of this.heap) {
+            if (w == weight) {
+                return
+            }
+        }
+        this.heap.push(weight);
+        this.heapifyUp();
+    }
+
+    extractMin(): Weight | undefined {
+        if (this.heap.length === 0) {
+            return undefined;
+        }
+
+        if (this.heap.length === 1) {
+            return this.heap.pop();
+        }
+
+        const min = this.heap[0];
+        this.heap[0] = this.heap.pop()!;
+        this.heapifyDown();
+
+        return min;
+    }
+
+    peek(): Weight | undefined {
+        return this.heap.length > 0 ? this.heap[0] : undefined;
+    }
+
+    size(): number {
+        return this.heap.length;
     }
 }

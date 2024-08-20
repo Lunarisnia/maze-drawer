@@ -10,5 +10,5 @@ export default abstract class Solver {
         this.end = end;
     }
 
-    abstract solve(): Array<Array<number>>
+    abstract solve(): [Array<Array<number>>, boolean]
 }
