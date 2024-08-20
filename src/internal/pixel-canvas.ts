@@ -13,6 +13,7 @@ export default class PixelCanvas {
     brushSize: number = 8;
     painting: boolean = false
     brush: Brush
+    brushColor: string
     constructor(mazeSize: number, brushSize: number) {
         this.canvas = document.querySelector<HTMLCanvasElement>("#myCanvas")!;
         this.canvas.height = brushSize * mazeSize;
@@ -24,18 +25,19 @@ export default class PixelCanvas {
         this.mazeSize = mazeSize;
         this.matrix = new Matrix(mazeSize);
         this.brushSize = brushSize;
+        this.brushColor = "white"
 
         this.canvas.addEventListener('mousemove', (mouseEvent: MouseEvent): void => {
-            this.mousePosition = new Vector2(mouseEvent.x, mouseEvent.y);
-            if (this.painting) {
-                Brush.paint(this.canvas, mouseEvent, this.matrix, this.mazeSize, this.brushSize)
+            this.mousePosition = new Vector2(mouseEvent.clientX, mouseEvent.clientY);
+            if (this.painting && this.brushColor == "white") {
+                Brush.paint(this.canvas, mouseEvent, this.matrix, this.mazeSize, this.brushSize, this.brushColor)
             }
         })
         this.canvas.addEventListener('mouseout', (): void => {
             this.painting = false;
         });
         this.canvas.addEventListener('mousedown', (mouseEvent: MouseEvent): void => {
-            Brush.paint(this.canvas, mouseEvent, this.matrix, this.mazeSize, this.brushSize)
+            Brush.paint(this.canvas, mouseEvent, this.matrix, this.mazeSize, this.brushSize, this.brushColor)
             this.painting = true;
         })
         this.canvas.addEventListener('mouseup', (_: MouseEvent): void => {
@@ -50,7 +52,7 @@ export default class PixelCanvas {
             const y: number = Math.floor(normalizedMousePosition.y / this.brushSize);
             this.ctx.beginPath();
             this.ctx.rect(x*this.brushSize, y*this.brushSize, this.brushSize, this.brushSize);
-            this.ctx.fillStyle = "white";
+            this.ctx.fillStyle = this.brushColor;
             // this.ctx.fillText(`Coordinate: ${x}, ${y}`, this.canvas.width / 8, this.canvas.height / 9);
             // this.ctx.fillText(`Mouse Coordinate: ${normalizedMousePosition.x}, ${normalizedMousePosition.y}`, this.canvas.width / 8, this.canvas.height / 3.5);
             this.ctx.fill()
@@ -67,6 +69,22 @@ export default class PixelCanvas {
                 } else {
                     this.ctx.fillStyle = "white";
                 }
+                switch (this.matrix.matrix[i][j]) {
+                    case 1:
+                        this.ctx.fillStyle = "white";
+                        break;
+                    case 2:
+                        this.ctx.fillStyle = "red";
+                        break;
+                    case 3:
+                        this.ctx.fillStyle = "green";
+                        break;
+                    case 4:
+                        this.ctx.fillStyle = "blue";
+                        break;
+                    default:
+                        this.ctx.fillStyle = "black";
+                }
                 // this.ctx.fillText(`Coordinate: ${x}, ${y}`, this.canvas.width / 8, this.canvas.height / 9);
                 // this.ctx.fillText(`Mouse Coordinate: ${normalizedMousePosition.x}, ${normalizedMousePosition.y}`, this.canvas.width / 8, this.canvas.height / 3.5);
                 this.ctx.fill()
@@ -76,5 +94,13 @@ export default class PixelCanvas {
 
     clearCanvas(): void {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    }
+
+    changeBrushColor(brushColor: string): void {
+        this.brushColor = brushColor;
+    }
+
+    reset(): void {
+        this.matrix.clear()
     }
 }
