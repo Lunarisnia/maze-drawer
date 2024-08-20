@@ -85,7 +85,6 @@ export class AStar extends Solver {
             if (minHeap.size() > 0) {
                 calculatePath(minHeap.extractMin()!)
             } else {
-                console.log("HEY")
                 return
             }
         }

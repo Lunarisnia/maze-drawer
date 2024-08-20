@@ -50,11 +50,8 @@ async function main() {
         // console.log(pixelCanvas.matrix.matrix)
         const solver: Solver = new AStar(pixelCanvas.matrix.matrix, pixelCanvas.matrix.start, pixelCanvas.matrix.end)
         pixelCanvas.matrix.reset()
-        const [solution, unsolvable] = solver.solve()
+        const [solution, _] = solver.solve()
         pixelCanvas.matrix.matrix = solution
-        if (unsolvable) {
-            console.log("unsolveable")
-        }
         pixelCanvas.matrix.dump()
     })
     while (true) {
