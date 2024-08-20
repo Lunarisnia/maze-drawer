@@ -13,10 +13,10 @@ export class Matrix {
 
     set(x: number, y: number, value: number): void {
         if (value != 1) {
-            if (this.start && this.start.x != x && this.start.y != y && value == 2) {
+            if (this.start && (this.start.x != x || this.start.y != y) && value == 2) {
                 this.matrix[this.start.y][this.start.x] = 0
             }
-            if (this.end && this.end.x != x && this.end.y != y && value == 3) {
+            if (this.end && (this.end.x != x || this.end.y != y) && value == 3) {
                 this.matrix[this.end.y][this.end.x] = 0
             }
 

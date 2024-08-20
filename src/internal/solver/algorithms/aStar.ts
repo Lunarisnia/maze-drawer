@@ -64,6 +64,7 @@ export class AStar extends Solver {
         let endNode: Weight | null = null;
         const calculatePath = (weight: Weight) => {
             visited[weight.position.y][weight.position.x] = true
+            this.maze[weight.position.y][weight.position.x] = 4
             if (weight.position.x == this.end!.x && weight.position.y == this.end!.y) {
                 endNode = weight;
                 return
@@ -93,6 +94,7 @@ export class AStar extends Solver {
         if (!endNode) {
             return [this.maze, true]
         }
+        this.pixelCanvas.matrix.reset();
         const safePath: Vector2[] = [];
         const getSafePath = (node: Weight | null) => {
             if (!node) {

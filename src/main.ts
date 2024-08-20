@@ -48,7 +48,7 @@ async function main() {
     })
     document.getElementById('solveButton')!.addEventListener('click', () => {
         // console.log(pixelCanvas.matrix.matrix)
-        const solver: Solver = new AStar(pixelCanvas.matrix.matrix, pixelCanvas.matrix.start, pixelCanvas.matrix.end)
+        const solver: Solver = new AStar(pixelCanvas.matrix.matrix, pixelCanvas.matrix.start, pixelCanvas.matrix.end, pixelCanvas)
         pixelCanvas.matrix.reset()
         const [solution, _] = solver.solve()
         pixelCanvas.matrix.matrix = solution
